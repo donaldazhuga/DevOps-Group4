@@ -82,7 +82,7 @@ stages:
     - job: DeployDev
       steps:
         # Debugging: List the contents of the target folder to verify JAR file existence
-        - script: dir $(System.DefaultWorkingDirectory)/target /s
+        - script: dir $(System.DefaultWorkingDirectory)\target /s
           displayName: 'List files in target directory'
 
         # Step 1: Deploy the application to Dev Environment
