@@ -53,7 +53,7 @@ stages:
              extraProperties: | 
                sonar.verbose=true
                sonar.log.level=DEBUG
-               sonar.java.binaries=$(System.DefaultWorkingDirectory)/target/classes
+               sonar.java.binaries=$(System.DefaultWorkingDirectory)\\target\\classes
         
         
 
