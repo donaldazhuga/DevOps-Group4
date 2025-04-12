@@ -6,7 +6,8 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  JAVA_HOME: 'C:\Program Files\Java\jdk-21'  # Ensure this points to the correct Java installation directory
+  JAVA_HOME: 'C:\Program Files\Java\jdk-21'
+  jarFileName: 'DevOps-Group4-1.0-SNAPSHOT.jar'  # <-- UPDATE this if your actual JAR name is different
 
 stages:
 # ------------------------------
@@ -17,10 +18,8 @@ stages:
   jobs:
     - job: Build
       steps:
-        # Step 1: Checkout code from the repository
         - checkout: self
 
-        # Step 2: Maven Build and Test
         - task: Maven@3
           inputs:
             mavenPomFile: 'pom.xml'
@@ -31,20 +30,17 @@ stages:
             mavenVersionOption: 'Default'
             publishJUnitResults: true
             testResultsFiles: '**/surefire-reports/TEST-*.xml'
-            jdkDirectory: $(JAVA_HOME)  # Specify the JAVA_HOME manually for the Maven task
+            jdkDirectory: $(JAVA_HOME)
 
-        # Debugging: Check JAVA_HOME variable
         - script: echo $(JAVA_HOME)
           displayName: 'Check JAVA_HOME'
 
-        # Debugging: List contents of the target directory after Maven build
         - script: dir "$(System.DefaultWorkingDirectory)\target" /s
           displayName: 'Debug target directory after Maven build'
 
-        # Step 3: SonarCloud Prepare Task
         - task: SonarCloudPrepare@1
           inputs:
-            SonarCloud: 'DevOps'  # Ensure the correct service connection name
+            SonarCloud: 'DevOps'
             organization: 'donaldazhuga'
             scannerMode: 'CLI'
             configMode: 'manual'
@@ -52,12 +48,10 @@ stages:
             cliProjectName: 'DevOps-Group4'
             cliSources: '.'
 
-        # Step 4: SonarCloud Publish Quality Gate
         - task: SonarCloudPublish@1
           inputs:
             pollingTimeoutSec: '300'
 
-        # Step 5: Publish Build Artifacts
         - task: PublishBuildArtifacts@1
           inputs:
             PathtoPublish: 'target'
@@ -65,7 +59,7 @@ stages:
             publishLocation: 'Container'
 
 # ------------------------------
-# CD - DEPLOYMENT
+# CD - DELIVER ARTIFACTS
 # ------------------------------
 - stage: Deliver
   displayName: 'Deliver Artifacts'
@@ -73,34 +67,35 @@ stages:
   jobs:
     - job: Deliver
       steps:
-        # Step 1: Download artifacts from Build stage
         - download: current
           artifact: drop
 
-        # Debugging: Verify downloaded artifact contents
         - script: dir "$(System.DefaultWorkingDirectory)\drop" /s
           displayName: 'Verify downloaded artifact contents'
 
-        # Mock delivery step
         - script: echo "Delivering artifact to the next stage"
           displayName: 'Mock Deliver Step'
 
+# ------------------------------
+# CD - DEPLOY TO DEV
+# ------------------------------
 - stage: DeployToDev
   displayName: 'Deploy to Dev Environment'
   dependsOn: Deliver
   jobs:
     - job: DeployDev
       steps:
-        # Debugging: List the contents of the target folder to verify JAR file existence
-        - script: dir "$(System.DefaultWorkingDirectory)\target" /s
-          displayName: 'List files in target directory'
+        - script: dir "$(System.DefaultWorkingDirectory)\drop" /s
+          displayName: 'List files in drop directory'
 
-        # Step 1: Deploy the application to Dev Environment
         - script: |
             echo "Starting deployment to Dev Environment on port 8081"
-            java -jar target/your-app.jar --server.port=8081
+            java -jar "$(System.DefaultWorkingDirectory)\drop\$(jarFileName)" --server.port=8081
           displayName: 'Deploy to Dev Port 8081'
 
+# ------------------------------
+# CD - DEPLOY TO QAT
+# ------------------------------
 - stage: DeployToQAT
   displayName: 'Deploy to QAT Environment'
   dependsOn: DeployToDev
@@ -110,6 +105,9 @@ stages:
         - script: echo "Mock deployment to QAT Environment"
           displayName: 'Deploy to QAT'
 
+# ------------------------------
+# CD - DEPLOY TO STAGING
+# ------------------------------
 - stage: DeployToStaging
   displayName: 'Deploy to Staging Environment'
   dependsOn: DeployToQAT
@@ -119,6 +117,9 @@ stages:
         - script: echo "Mock deployment to Staging Environment"
           displayName: 'Deploy to Staging'
 
+# ------------------------------
+# CD - DEPLOY TO PRODUCTION
+# ------------------------------
 - stage: DeployToProduction
   displayName: 'Deploy to Production Environment'
   dependsOn: DeployToStaging
