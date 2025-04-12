@@ -44,7 +44,7 @@ stages:
             organization: 'donaldazhuga'
             scannerMode: 'CLI'
             configMode: 'manual'
-            cliProjectKey: 'DevOps-Group4'
+            cliProjectKey: 'donaldazhuga'
             cliProjectName: 'DevOps-Group4'
             cliSources: '.'
 
