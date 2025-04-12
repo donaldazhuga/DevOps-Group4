@@ -48,17 +48,7 @@ stages:
             cliProjectName: 'DevOps-Group4'
             cliSources: '.'
 
-        # Debugging: List compiled classes in the target directory
-        - script: dir "$(System.DefaultWorkingDirectory)/target/classes" /s
-          displayName: 'List compiled classes'
-        
-        # Step 4: SonarCloud Analyze Task
-        - task: SonarCloudAnalyze@1
-          inputs:
-             extraProperties: | 
-               sonar.verbose=true
-               sonar.log.level=DEBUG
-               sonar.java.binaries=$(System.DefaultWorkingDirectory)\\target\\classes
+       
 
         # Step 5: SonarCloud Publish Quality Gate
         - task: SonarCloudPublish@1
