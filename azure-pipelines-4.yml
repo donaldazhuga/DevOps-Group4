@@ -51,6 +51,9 @@ stages:
                sonar.verbose=true
                sonar.log.level=DEBUG
                sonar.java.binaries=$(System.DefaultWorkingDirectory)/target/classes
+        
+        - script: ls -R $(System.DefaultWorkingDirectory)/target/classes
+          displayName: 'List compiled classes'
 
         # Step 5: SonarCloud Publish Quality Gate
         - task: SonarCloudPublish@1
