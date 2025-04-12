@@ -44,6 +44,9 @@ stages:
             cliProjectName: 'DevOps-Group4'
             cliSources: '.'
 
+        - script: ls -R $(System.DefaultWorkingDirectory)/target/classes
+          displayName: 'List compiled classes'
+        
         # Step 4: SonarCloud Analyze Task
         - task: SonarCloudAnalyze@1
           inputs:
@@ -52,8 +55,7 @@ stages:
                sonar.log.level=DEBUG
                sonar.java.binaries=$(System.DefaultWorkingDirectory)/target/classes
         
-        - script: ls -R $(System.DefaultWorkingDirectory)/target/classes
-          displayName: 'List compiled classes'
+        
 
         # Step 5: SonarCloud Publish Quality Gate
         - task: SonarCloudPublish@1
