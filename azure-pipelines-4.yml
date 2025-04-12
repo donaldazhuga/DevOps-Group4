@@ -48,14 +48,12 @@ stages:
             cliProjectName: 'DevOps-Group4'
             cliSources: '.'
 
-       
-
-        # Step 5: SonarCloud Publish Quality Gate
+        # Step 4: SonarCloud Publish Quality Gate
         - task: SonarCloudPublish@1
           inputs:
             pollingTimeoutSec: '300'
 
-        # Step 6: Publish Build Artifacts
+        # Step 5: Publish Build Artifacts
         - task: PublishBuildArtifacts@1
           inputs:
             PathtoPublish: 'target'
@@ -83,14 +81,15 @@ stages:
   jobs:
     - job: DeployDev
       steps:
+        # Debugging: List the contents of the target folder to verify JAR file existence
+        - script: dir $(System.DefaultWorkingDirectory)/target /s
+          displayName: 'List files in target directory'
+
+        # Step 1: Deploy the application to Dev Environment
         - script: |
             echo "Starting deployment to Dev Environment on port 8081"
             java -jar target/your-app.jar --server.port=8081
           displayName: 'Deploy to Dev Port 8081'
-
-        # Debugging: List the contents of the target folder to verify JAR file existence
-        - script: dir $(System.DefaultWorkingDirectory)/target /s
-          displayName: 'List files in target directory'
 
 - stage: DeployToQAT
   displayName: 'Deploy to QAT Environment'
