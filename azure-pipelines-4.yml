@@ -37,6 +37,10 @@ stages:
         - script: echo $(JAVA_HOME)
           displayName: 'Check JAVA_HOME'
 
+        # Debugging: List contents of the target directory after Maven build
+        - script: dir "$(System.DefaultWorkingDirectory)\target" /s
+          displayName: 'Debug target directory after Maven build'
+
         # Step 3: SonarCloud Prepare Task
         - task: SonarCloudPrepare@1
           inputs:
@@ -69,9 +73,15 @@ stages:
   jobs:
     - job: Deliver
       steps:
+        # Step 1: Download artifacts from Build stage
         - download: current
           artifact: drop
 
+        # Debugging: Verify downloaded artifact contents
+        - script: dir "$(System.DefaultWorkingDirectory)\drop" /s
+          displayName: 'Verify downloaded artifact contents'
+
+        # Mock delivery step
         - script: echo "Delivering artifact to the next stage"
           displayName: 'Mock Deliver Step'
 
@@ -82,7 +92,7 @@ stages:
     - job: DeployDev
       steps:
         # Debugging: List the contents of the target folder to verify JAR file existence
-        - script: dir $(System.DefaultWorkingDirectory)\target /s
+        - script: dir "$(System.DefaultWorkingDirectory)\target" /s
           displayName: 'List files in target directory'
 
         # Step 1: Deploy the application to Dev Environment
