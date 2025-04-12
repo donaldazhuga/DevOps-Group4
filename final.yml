@@ -1,0 +1,57 @@
+# Sample Azure DevOps Pipeline YAML
+
+trigger:
+- main  # Replace 'main' with your default branch name
+
+pool:
+  vmImage: 'windows-latest'  # Use appropriate VM image for your needs
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+  - stage: Build
+    displayName: 'Build Stage'
+    jobs:
+      - job: Build
+        displayName: 'Build Job'
+        steps:
+          - script: |
+              echo "Starting the build process..."
+              # Add your build commands here, e.g., Maven or MSBuild
+              # Example (uncomment and modify for your usage):
+              # mvn clean package -DskipTests
+            displayName: 'Build Project'
+
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'  # Path to publish
+              ArtifactName: 'drop'  # Name of the artifact
+              publishLocation: 'Container'
+
+  - stage: Deliver
+    displayName: 'Deliver Artifacts'
+    dependsOn: Build
+    jobs:
+      - job: Deliver
+        displayName: 'Deliver Job'
+        steps:
+          - download: current
+            artifact: drop
+
+          # List the contents of the working directory for debugging
+          - script: dir "$(System.DefaultWorkingDirectory)" /s
+            displayName: 'List contents of working directory'
+
+          # Verify downloaded artifact contents
+          - script: |
+              if exist "$(System.DefaultWorkingDirectory)\drop\" (
+                  dir "$(System.DefaultWorkingDirectory)\drop" /s
+              ) else (
+                  echo "Drop directory does not exist."
+              )
+            displayName: 'Verify downloaded artifact contents'
+
+          # Additional delivery step (e.g., deployment, logging)
+          - script: echo "Delivering artifact to the next stage or environment"
+            displayName: 'Mock Deliver Step'
