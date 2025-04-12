@@ -44,7 +44,7 @@ stages:
             cliProjectName: 'DevOps-Group4'
             cliSources: '.'
 
-        - script: ls -R $(System.DefaultWorkingDirectory)/target/classes
+        - script: dir "$(System.DefaultWorkingDirectory)/target/classes" /s
           displayName: 'List compiled classes'
         
         # Step 4: SonarCloud Analyze Task
