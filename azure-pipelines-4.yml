@@ -33,6 +33,10 @@ stages:
             testResultsFiles: '**/surefire-reports/TEST-*.xml'
             jdkDirectory: $(JAVA_HOME)  # Specify the JAVA_HOME manually for the Maven task
 
+        # Debugging: Check JAVA_HOME variable
+        - script: echo $(JAVA_HOME)
+          displayName: 'Check JAVA_HOME'
+
         # Step 3: SonarCloud Prepare Task
         - task: SonarCloudPrepare@1
           inputs:
@@ -44,6 +48,7 @@ stages:
             cliProjectName: 'DevOps-Group4'
             cliSources: '.'
 
+        # Debugging: List compiled classes in the target directory
         - script: dir "$(System.DefaultWorkingDirectory)/target/classes" /s
           displayName: 'List compiled classes'
         
@@ -54,8 +59,6 @@ stages:
                sonar.verbose=true
                sonar.log.level=DEBUG
                sonar.java.binaries=$(System.DefaultWorkingDirectory)\\target\\classes
-        
-        
 
         # Step 5: SonarCloud Publish Quality Gate
         - task: SonarCloudPublish@1
@@ -94,6 +97,10 @@ stages:
             echo "Starting deployment to Dev Environment on port 8081"
             java -jar target/your-app.jar --server.port=8081
           displayName: 'Deploy to Dev Port 8081'
+
+        # Debugging: List the contents of the target folder to verify JAR file existence
+        - script: dir $(System.DefaultWorkingDirectory)/target /s
+          displayName: 'List files in target directory'
 
 - stage: DeployToQAT
   displayName: 'Deploy to QAT Environment'
