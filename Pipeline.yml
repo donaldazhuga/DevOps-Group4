@@ -16,6 +16,9 @@ stages:
     jobs:
       - job: Build
         steps:
+        
+          
+      
           - task: Maven@3
             inputs:
               mavenPomFile: 'pom.xml'
@@ -24,7 +27,7 @@ stages:
               jdkVersionOption: '21'
               jdkArchitectureOption: 'x64'
               publishJUnitResults: true
-              testResultsFiles: '/surefire-reports/TEST-*.xml'
+              testResultsFiles: '**/surefire-reports/TEST-*.xml'
               goals: 'package'
 
           - task: PublishBuildArtifacts@1
