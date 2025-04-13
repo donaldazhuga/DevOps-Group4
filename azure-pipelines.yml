@@ -32,7 +32,14 @@ stages:
             publishJUnitResults: true
             testResultsFiles: '/surefire-reports/TEST-*.xml'
             jdkDirectory: $(JAVA_HOME)  # Specify the JAVA_HOME manually for the Maven task
-            
+         
+        - task: PublishCodeCoverageResults@1
+          displayName: 'Publish JaCoCo Code Coverage Report'
+          inputs:
+             codeCoverageTool: 'JaCoCo'
+             summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/target/site/jacoco/jacoco.xml'
+             reportDirectory: '$(System.DefaultWorkingDirectory)/**/target/site/jacoco'
+  
 
         # Debugging: Check JAVA_HOME variable
         - script: echo $(JAVA_HOME)
