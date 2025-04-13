@@ -21,7 +21,7 @@ stages:
               mavenPomFile: 'pom.xml'
               mavenOptions: '-Xmx3072m'
               javaHomeOption: 'JDKVersion'
-              jdkVersionOption: '21.0.4'
+              jdkVersionOption: '21'
               jdkArchitectureOption: 'x64'
               publishJUnitResults: true
               testResultsFiles: '/surefire-reports/TEST-*.xml'
