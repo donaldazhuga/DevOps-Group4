@@ -24,7 +24,7 @@ stages:
         - task: Maven@3
           inputs:
             mavenPomFile: 'pom.xml'
-            goals: 'clean install'
+            goals: 'test'
             options: '-DskipTests=false'
             javaHomeOption: 'UserPath'
             jdkVersionOption: '21'
