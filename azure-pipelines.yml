@@ -24,7 +24,7 @@ stages:
         - task: Maven@3
           inputs:
             mavenPomFile: 'pom.xml'
-            goals: 'test'
+            
             options: '-DskipTests=false'
             javaHomeOption: 'UserPath'
             jdkVersionOption: '21'
@@ -32,6 +32,7 @@ stages:
             publishJUnitResults: true
             testResultsFiles: '/surefire-reports/TEST-*.xml'
             jdkDirectory: $(JAVA_HOME)  # Specify the JAVA_HOME manually for the Maven task
+            goals: 'package'
 
         # Debugging: Check JAVA_HOME variable
         - script: echo $(JAVA_HOME)
