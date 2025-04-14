@@ -40,7 +40,6 @@ stages:
              summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/target/site/jacoco/jacoco.xml'
              reportDirectory: '$(System.DefaultWorkingDirectory)/**/target/site/jacoco'
   
-
         # Debugging: Check JAVA_HOME variable
         - script: echo $(JAVA_HOME)
           displayName: 'Check JAVA_HOME'
